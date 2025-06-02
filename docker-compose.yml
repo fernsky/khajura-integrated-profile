@@ -52,6 +52,7 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-buddhashanti}
       - REDIS_URL=${REDIS_URL:-redis://digprofile.com:6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://likhupike-dpms-api.intensivestudy.com.np/api}
 
 volumes:
   postgres_data:
