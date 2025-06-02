@@ -4820,39 +4820,6 @@ CREATE TABLE IF NOT EXISTS
 
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_households_in_agriculture" (
-        "id" varchar(36) PRIMARY KEY NOT NULL,
-        "ward_number" integer NOT NULL,
-        "involved_in_agriculture" integer NOT NULL,
-        "non_involved_in_agriculture" integer NOT NULL,
-        "updated_at" timestamp DEFAULT now(),
-        "created_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_time_to_financial_organization" (
-        "id" varchar(36) PRIMARY KEY NOT NULL,
-        "ward_number" integer NOT NULL,
-        "time_to_financial_organization" "time_to_financial_organization_type" NOT NULL,
-        "households" integer NOT NULL,
-        "updated_at" timestamp DEFAULT now(),
-        "created_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_financial_accounts" (
-        "id" varchar(36) PRIMARY KEY NOT NULL,
-        "ward_number" integer NOT NULL,
-        "financial_account_type" "financial_account_type_enum" NOT NULL,
-        "households" integer NOT NULL,
-        "updated_at" timestamp DEFAULT now(),
-        "created_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
     "acme_ward_wise_land_ownership" (
         "id" varchar(36) PRIMARY KEY NOT NULL,
         "ward_number" integer NOT NULL,
