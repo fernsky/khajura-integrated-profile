@@ -4755,17 +4755,6 @@ CREATE TABLE IF NOT EXISTS
 
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_major_skills" (
-        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid () NOT NULL,
-        "ward_number" integer NOT NULL,
-        "skill" "skill_type" NOT NULL,
-        "population" integer DEFAULT 0 NOT NULL,
-        "created_at" timestamp DEFAULT now(),
-        "updated_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
     "ward_wise_remittance_expenses" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid () NOT NULL,
         "ward_number" integer NOT NULL,
@@ -4783,17 +4772,6 @@ CREATE TABLE IF NOT EXISTS
         "trained_population" integer DEFAULT 0 NOT NULL,
         "created_at" timestamp DEFAULT now(),
         "updated_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_house_ownership" (
-        "id" varchar(36) PRIMARY KEY NOT NULL,
-        "ward_number" integer NOT NULL,
-        "ownership_type" "ownership_type_enum" NOT NULL,
-        "households" integer NOT NULL,
-        "updated_at" timestamp DEFAULT now(),
-        "created_at" timestamp DEFAULT now()
     );
 
 --> statement-breakpoint
