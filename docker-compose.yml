@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  postgresdb:
+    image: postgis/postgis:15-3.4
+    container_name: khajura-postgis
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-product-survey}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:${POSTGRES_DATA_DIRECTORY:-/var/lib/postgresql/data}
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./sql/profile:/docker-entrypoint-initdb.d/sql/profile
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d/init-scripts
+      - ./docker/init-scripts/init-db.sh:/docker-entrypoint-initdb.d/init.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command:
+      [
+        "bash",
+        "-c",
+        "chmod +x /docker-entrypoint-initdb.d/init.sh && docker-entrypoint.sh postgres",
+      ]
+
+  nextjs:
+    image: your-nextjs-image:latest # Replace with your actual Next.js image
+    container_name: khajura-nextjs
+    restart: always
+    depends_on:
+      - postgresdb
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${POSTGRES_HOSTNAME:-postgresdb}:5432/${POSTGRES_DB:-product-survey}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT:-minio-p4wwo448sowg8ck408gwgc08.intensivestudy.com.np}
+      - MINIO_PORT=${MINIO_PORT:-443}
+      - MINIO_CLIENT_ACCESS_KEY=${MINIO_CLIENT_ACCESS_KEY:-admin}
+      - MINIO_CLIENT_SECRET_KEY=${MINIO_CLIENT_SECRET_KEY:-Pheinai4}
+      - MINIO_USE_SSL=${MINIO_USE_SSL:-true}
+      - BUCKET_NAME=${BUCKET_NAME:-product}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-admin}
+      - MINIO_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY:-Pheinai4}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-buddhashanti}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-buddhashanti}
+      - REDIS_URL=${REDIS_URL:-redis://digprofile.com:6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81}
+
+volumes:
+  postgres_data:
