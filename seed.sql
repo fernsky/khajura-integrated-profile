@@ -734,7 +734,7 @@ END $$;
 
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."school_type" AS ENUM('COMMUNITY_PUBLIC', 'INSTITUTIONAL_PRIVATE', 'RELIGIOUS', 'GOVERNMENT_AIDED', 'COMMUNITY_AIDED', 'SPECIAL_EDUCATION', 'TECHNICAL', 'VOCATIONAL', 'ALTERNATIVE', 'OTHER');
+ CREATE TYPE "public"."school_type" AS ENUM('COMMUNITY_PUBLIC', 'INSTITUTIONAL_PRIVATE', 'RELIGIOUS', 'GOVERNMENT_AIDED', 'COMMUNITY_AIDED', 'SPECIAL_EDUCATION', 'VOCATIONAL', 'ALTERNATIVE', 'OTHER');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -910,13 +910,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."university_building_condition" AS ENUM('EXCELLENT', 'GOOD', 'FAIR', 'NEEDS_REPAIR', 'NEEDS_RECONSTRUCTION', 'UNDER_CONSTRUCTION', 'EXPANDED_RECENTLY', 'HISTORIC_PRESERVED');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."university_category" AS ENUM('COMPREHENSIVE', 'SPECIALIZED', 'TECHNICAL', 'RESEARCH', 'TEACHING', 'OPEN', 'AGRICULTURE', 'MEDICAL', 'TECHNICAL', 'ENGINEERING', 'BUSINESS', 'LAW', 'ARTS', 'OTHER');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -4555,16 +4548,6 @@ CREATE TABLE IF NOT EXISTS
 
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS
-    "acme_ward_wise_househead_gender" (
-        "id" varchar(36) PRIMARY KEY NOT NULL,
-        "ward_number" integer NOT NULL,
-        "ward_name" varchar(100),
-        "gender" "gender" NOT NULL,
-        "population" integer DEFAULT 0 NOT NULL
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
     "acme_ward_wise_mother_tongue_population" (
         "id" varchar(36) PRIMARY KEY NOT NULL,
         "ward_number" integer NOT NULL,
@@ -4998,11 +4981,11 @@ CREATE TABLE IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS
     "acme_municipality_wide_animal_products" (
         "id" varchar(36) PRIMARY KEY NOT NULL,
-        "animal_product" "animal_product_type_enum" NOT NULL,
+        "animal_product" TEXT NOT NULL,
         "production_amount" numeric(14, 2) NOT NULL,
         "sales_amount" numeric(14, 2) NOT NULL,
         "revenue_in_rs" numeric(14, 2) NOT NULL,
-        "measurement_unit" "measurement_unit_enum" NOT NULL,
+        "measurement_unit" TEXT NOT NULL,
         "updated_at" timestamp DEFAULT now(),
         "created_at" timestamp DEFAULT now()
     );
@@ -7035,7 +7018,7 @@ CREATE TABLE IF NOT EXISTS
         "slug" text NOT NULL,
         "description" text,
         "university_type" "university_type" NOT NULL,
-        "university_category" "university_category" NOT NULL,
+        "university_category" TEXT NOT NULL,
         "ward_number" integer,
         "location" text,
         "address" text,
@@ -9492,7 +9475,7 @@ CREATE TABLE IF NOT EXISTS
         "location_point" geometry (Point, 4326),
         "building_footprint" geometry (Polygon, 4326),
         "catchment_area" geometry (MultiPolygon, 4326),
-        "service_status" "service_availability" DEFAULT 'REGULARLY_AVAILABLE',
+        "service_status" TEXT DEFAULT 'REGULARLY_AVAILABLE',
         "is_active" boolean DEFAULT true,
         "is_verified" boolean DEFAULT false,
         "verification_date" timestamp,
@@ -16649,32 +16632,6 @@ CREATE TABLE IF NOT EXISTS
 
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS
-    "acme_demographic_summary" (
-        "id" varchar(36) PRIMARY KEY DEFAULT 'singleton' NOT NULL,
-        "total_population" integer,
-        "population_male" integer,
-        "population_female" integer,
-        "population_other" integer,
-        "population_absentee_total" integer,
-        "population_male_absentee" integer,
-        "population_female_absentee" integer,
-        "population_other_absentee" integer,
-        "sex_ratio" numeric,
-        "total_households" integer,
-        "average_household_size" numeric,
-        "population_density" numeric,
-        "population_0_to_14" integer,
-        "population_15_to_59" integer,
-        "population_60_and_above" integer,
-        "growth_rate" numeric,
-        "literacy_rate_above_15" numeric,
-        "literacy_rate_15_to_24" numeric,
-        "updated_at" timestamp DEFAULT now(),
-        "created_at" timestamp DEFAULT now()
-    );
-
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS
     "acme_ward_wise_absentee_educational_level" (
         "id" varchar(36) PRIMARY KEY NOT NULL,
         "ward_number" integer NOT NULL,
@@ -21193,33 +21150,39 @@ CREATE INDEX IF NOT EXISTS "user_email_idx" ON "acme_users" USING btree ("user_n
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "ward_number_idx" ON "acme_wards" USING btree ("ward_number");
 
-INSERT INTO
-    public.acme_users (
-        id,
-        user_name,
-        "name",
-        hashed_password,
-        phone_number,
-        email,
-        avatar,
-        ward_number,
-        "role",
-        is_active,
-        created_at,
-        updated_at
-    )
-VALUES
-    (
-        'sx9kfrgnnxjabu3wp4mbu',
-        'admin',
-        'Suresh Sahu',
-        'a86b1dbc9dc5187f404c5bc2032346b0:2d2ae70b65913284d72b78572f3049f0e2504d81a9b278855cbdf8f67e23966d3273fdcc9e9f8314b49a01761486638609e24cb0d430cd6c264a626c98464fe3',
-        '9843016335',
-        'ito.khajuramun@gmail.com',
-        NULL,
-        1,
-        'superadmin'::public."roles",
-        true,
-        '2025-01-21 11:31:27.615',
-        '2025-01-21 11:31:27.615'
-    );
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM public.acme_users WHERE id = 'sx9kfrgnnxjabu3wp4mbt') THEN
+        INSERT INTO
+            public.acme_users (
+                id,
+                user_name,
+                "name",
+                hashed_password,
+                phone_number,
+                email,
+                avatar,
+                ward_number,
+                "role",
+                is_active,
+                created_at,
+                updated_at
+            )
+        VALUES
+            (
+                'sx9kfrgnnxjabu3wp4mbt',
+                'admin',
+                'Suresh Sahu',
+                'a86b1dbc9dc5187f404c5bc2032346b0:2d2ae70b65913284d72b78572f3049f0e2504d81a9b278855cbdf8f67e23966d3273fdcc9e9f8314b49a01761486638609e24cb0d430cd6c264a626c98464fe3',
+                '9843016335',
+                'ito.khajuramun@gmail.com',
+                NULL,
+                1,
+                'superadmin'::public."roles",
+                true,
+                '2025-01-21 11:31:27.615',
+                '2025-01-21 11:31:27.615'
+            );
+    END IF;
+END
+$$;
