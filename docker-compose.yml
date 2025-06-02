@@ -30,7 +30,7 @@ services:
       ]
 
   nextjs:
-    image: your-nextjs-image:latest # Replace with your actual Next.js image
+    image: isresearch/khajura-integrated-profile:latest
     container_name: khajura-nextjs
     restart: always
     depends_on:
